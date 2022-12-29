@@ -4,11 +4,9 @@
     <div v-for="(dictionary, cathegory) in myJson">
       <p>{{ cathegory }}</p>
       <div v-for="(russian, english) in dictionary">
-        <form @submit.prevent="submitWord">
-          <input type="text" @input="readWord($event, russian)">
-        </form>
-
-        <div v-if="submitted">Your answer was {{ answer }} and the actual answer was {{ english }}. Therefore, you are
+        <input type="text" @input="readWord" @keyup.enter="confirmAnswer(russian)">
+        <button>Check</button>
+        <div>Your answer was {{ confirmedAnswer }} and the actual answer was {{ english }}. Therefore, you are
           {{ correct }}.
         </div>
       </div>
@@ -25,16 +23,17 @@ export default {
       myJson: json,
       correct: false,
       answer: '',
-      submitted: false,
+      confirmedAnswer: '',
     }
   },
   methods: {
-    readWord(event: any, russian: string) {
+    readWord(event: any) {
       this.answer = event.target.value;
-      this.correct = this.answer === russian
+
     },
-    submitWord(event: any) {
-      this.submitted = true;
+    confirmAnswer(russian: string) {
+      this.confirmedAnswer = this.answer
+      this.correct = this.confirmedAnswer === russian
     }
   }
 }
