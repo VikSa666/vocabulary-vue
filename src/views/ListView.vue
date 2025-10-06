@@ -81,7 +81,6 @@
           ><p-tag v-for="tag in slotProps.data.tags" :value="tag" rounded
         /></template>
       </p-column>
-      <template #body></template>
     </p-data-table>
   </div>
 </template>

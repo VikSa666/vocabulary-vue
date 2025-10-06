@@ -62,7 +62,7 @@
         <p-button
           v-if="item.show"
           size="small"
-          :label="item.label"
+          :label="item.label as string | undefined"
           :icon="item.icon"
           @click="item.goToFunction"
         />
