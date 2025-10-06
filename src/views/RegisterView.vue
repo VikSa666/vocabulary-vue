@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import { useUserStore } from '../stores/userStore';
   import { useRouter } from 'vue-router';
   import PButton from 'primevue/button';
   import PInputGroup from 'primevue/inputgroup';
@@ -8,15 +7,21 @@
   import PInputText from 'primevue/inputtext';
   import PPassword from 'primevue/password';
   import PCard from 'primevue/card';
+  import { useUserStore } from '../stores/userStore';
 
-  const userStore = useUserStore();
   const router = useRouter();
+  const userStore = useUserStore();
 
   let email = ref('');
   let password = ref('');
+  let firstName = ref('');
 
-  async function login() {
-    const success = await userStore.signIn(email.value, password.value);
+  async function createAccount() {
+    const success = await userStore.signUp(email.value, password.value, {
+      data: {
+        first_name: firstName.value,
+      },
+    });
     if (success) {
       router.push('/secret');
     }
@@ -25,9 +30,15 @@
 
 <template>
   <p-card>
-    <template #title>Login</template>
+    <template #title>Create account</template>
     <template #content>
       <div class="flex flex-col flex-center gap-2 p-2 items-center">
+        <p-input-group>
+          <p-input-group-addon>
+            <i class="pi pi-user" />
+          </p-input-group-addon>
+          <p-input-text type="text" size="small" v-model="firstName" placeholder="Name" />
+        </p-input-group>
         <p-input-group>
           <p-input-group-addon>
             <i class="pi pi-at" />
@@ -44,23 +55,30 @@
           <p-input-group-addon>
             <i class="pi pi-key" />
           </p-input-group-addon>
-          <p-password
-            type="text"
-            size="small"
-            v-model="password"
-            placeholder="Password"
-            :feedback="false"
-          />
+          <p-password type="text" size="small" v-model="password" placeholder="Password" />
         </p-input-group>
 
-        <p-button label="Login" @click="login" size="small" />
+        <p-button label="Create" @click="createAccount" size="small" />
         <div class="flex flex-row items-center">
-          <p class="text-sm">You don't have an account?</p>
+          <p class="m-0 text-sm">Already have an account?</p>
           <p-button variant="link" asChild v-slot="slotProps" size="small">
-            <router-link to="/register" :class="slotProps.class">Create account</router-link>
+            <router-link to="/login" :class="slotProps.class">Login</router-link>
           </p-button>
         </div>
       </div>
     </template>
   </p-card>
 </template>
+
+<style scoped>
+  .inputContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .buttonContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+  }
+</style>
