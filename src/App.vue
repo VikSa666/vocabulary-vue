@@ -80,6 +80,7 @@
       </template>
     </p-menubar>
   </header>
-
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>

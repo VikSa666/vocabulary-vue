@@ -31,4 +31,10 @@ export interface WordData {
 }
 
 // TODO: others??
-export type LexicCategory = 'noun' | 'verb' | 'adjective' | 'other';
+export const lexicCategories = ['noun', 'verb', 'adjective', 'other'];
+export type LexicCategory = (typeof lexicCategories)[number];
+
+export interface Tag {
+  name: string;
+  color: string;
+}

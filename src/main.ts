@@ -7,6 +7,7 @@ import { definePreset } from '@primevue/themes';
 import router from './router';
 import { createPinia } from 'pinia';
 import { useUserStore } from './stores/userStore';
+import KeyFilter from 'primevue/keyfilter';
 
 const Noir = definePreset(Aura, {
   semantic: {
@@ -69,6 +70,7 @@ app.use(PrimeVue, {
     },
   },
 });
+app.directive('keyfilter', KeyFilter);
 
 const userStore = useUserStore();
 await userStore.fetchUser();
