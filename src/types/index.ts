@@ -19,7 +19,7 @@ export interface Word {
   langInWord: string;
   langOutWord: string;
   category: LexicCategory;
-  tags: string[];
+  tags: Tag[];
   metadata?: WordData;
 }
 
@@ -31,7 +31,25 @@ export interface WordData {
 }
 
 // TODO: others??
-export const lexicCategories = ['noun', 'verb', 'adjective', 'other'];
+export const lexicCategoriesColors: Array<{ name: LexicCategory; color: string }> = [
+  { name: 'interjection', color: '#9DA1AA' },
+  { name: 'noun', color: '#9DA1AA' },
+  { name: 'verb', color: '#256D7B' },
+  { name: 'adjective', color: '#721422' },
+  { name: 'adverb', color: '#646B63' },
+  { name: 'phrase', color: '#CF3476' },
+  { name: 'pronoun', color: '#CFD3CD' },
+];
+
+export const lexicCategories: Array<string> = [
+  'interjection',
+  'noun',
+  'verb',
+  'adjective',
+  'adverb',
+  'phrase',
+  'pronoun',
+];
 export type LexicCategory = (typeof lexicCategories)[number];
 
 export interface Tag {

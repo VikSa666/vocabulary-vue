@@ -2,16 +2,32 @@
   import { RouterView, useRouter } from 'vue-router';
   import PButton from 'primevue/button';
   import PMenubar from 'primevue/menubar';
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { useUserStore } from './stores/userStore';
   import { storeToRefs } from 'pinia';
 
   const userStore = useUserStore();
 
-  const darkMode = ref(document.documentElement.classList.contains('my-app-dark'));
+  const darkMode = ref(false);
+  onMounted(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      darkMode.value = true;
+      document.documentElement.classList.add('my-app-dark');
+    } else {
+      darkMode.value = false;
+      document.documentElement.classList.remove('my-app-dark');
+    }
+  });
   function toggleDarkMode() {
     darkMode.value = !darkMode.value;
-    document.documentElement.classList.toggle('my-app-dark');
+    if (darkMode.value) {
+      document.documentElement.classList.add('my-app-dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('my-app-dark');
+      localStorage.setItem('theme', 'light');
+    }
   }
 
   const router = useRouter();
@@ -44,7 +60,7 @@
 
   async function signOut() {
     await userStore.signOut();
-    console.log('sign out successful');
+    console.info('Sign out successful');
     router.push('/');
   }
 
@@ -81,6 +97,15 @@
     </p-menubar>
   </header>
   <main>
-    <RouterView />
+    <div class="main-content">
+      <RouterView />
+    </div>
   </main>
 </template>
+<style scoped>
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

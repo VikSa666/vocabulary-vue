@@ -4,10 +4,13 @@
   import PMessage from 'primevue/message';
   import PInputText from 'primevue/inputtext';
   import PMultiSelect from 'primevue/multiselect';
-  import PSelect from 'primevue/select';
-  import PTag from 'primevue/tag';
-  import { ref, type Ref } from 'vue';
-  import { lexicCategories, type LexicCategory } from '../types';
+  import PillTag from './PillTag.vue';
+  import AddTag from './AddTag.vue';
+  import CategorySelector from './CategorySelector.vue';
+  import { onMounted, ref, type Ref } from 'vue';
+  import { type LexicCategory, type Tag } from '../types';
+  import { useUserStore } from '../stores/userStore';
+  import { supabase } from '../clients/supabase';
 
   const langOutWord = ref('');
   const langInWord = ref('');
@@ -20,27 +23,21 @@
     category?: LexicCategory;
     tags: Tag[];
   }
-  // TODO: obtain the languages to display
-  // interface Props {
-  //   learningLang: string;
-  //   nativeLang: string;
-  // }
 
-  // const props = defineProps<Props>();
+  const userStore = useUserStore();
 
-  // TODO: Fetch actual tags from table or user
-  interface Tag {
-    name: string;
-    color: string;
+  interface Props {
+    listId: string;
   }
-  const availableTags = ref([
-    { name: 'basic', color: '#1234' },
-    { name: 'asdf', color: '#1234' },
-    { name: 'fdsa', color: '#1234' },
-  ]);
 
-  // TODO: Fetch actual categories from table or user
-  const availableCategories = lexicCategories;
+  const props = defineProps<Props>();
+
+  const availableTags: Ref<Tag[]> = ref([]);
+  onMounted(() => {
+    userStore.getUserListData(props.listId).then((promise) => {
+      availableTags.value = promise?.tags ?? [];
+    });
+  });
 
   const emit = defineEmits<{
     (e: 'add-word', args: PartialWord): void;
@@ -53,6 +50,27 @@
       category: category.value,
       tags: tags.value,
     });
+  }
+
+  // TODO: Abstract to generic
+  async function updateTagList() {
+    const updatedList = await userStore.getUserListData(props.listId);
+    if (updatedList) {
+      availableTags.value = updatedList.tags;
+    }
+  }
+
+  async function removeTag(tag: Tag) {
+    const updatedTags = availableTags.value.filter((t) => t !== tag);
+    const { error } = await supabase
+      .from('lists')
+      .update({ tags: updatedTags })
+      .eq('id', props.listId);
+    if (error) throw error;
+    console.info(`Removed tag ${tag.name}`);
+    userStore
+      .getUserListData(props.listId)
+      .then((promise) => (availableTags.value = promise?.tags ?? []));
   }
 </script>
 
@@ -75,7 +93,7 @@
         </div>
 
         <div class="flex flex-col gap-2 w-[20%] min-w-40">
-          <p-select v-model="category" :options="availableCategories" placeholder="Category" />
+          <category-selector v-model="category" />
           <p-message size="small" severity="secondary" variant="simple"
             >Select the grammatical category.</p-message
           >
@@ -94,9 +112,19 @@
             checkmark
           >
             <template #option="slotProps">
-              <div class="flex items-center">
-                <!-- Todo! Colors!! -->
-                <p-tag :value="slotProps.option.name" rounded />
+              <div class="flex justify-between items-center w-full">
+                <pill-tag
+                  :tag="{ name: slotProps.option.name, color: slotProps.option.color }"
+                  rounded
+                />
+                <p-button
+                  size="small"
+                  icon="pi pi-trash"
+                  severity="secondary"
+                  text
+                  rounded
+                  @click.stop="removeTag(slotProps.option)"
+                />
               </div>
             </template>
             <template #dropdownicon>
@@ -110,15 +138,7 @@
               <div class="font-medium px-3 py-2">Available Tags</div>
             </template>
             <template #footer>
-              <div class="p-3 flex justify-between">
-                <p-button
-                  label="Add New"
-                  severity="secondary"
-                  variant="text"
-                  size="small"
-                  icon="pi pi-plus"
-                />
-              </div>
+              <add-tag :list-id="props.listId" @tag-added="updateTagList" />
             </template>
           </p-multi-select>
           <p-message size="small" severity="secondary" variant="simple"

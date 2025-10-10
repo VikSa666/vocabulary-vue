@@ -16,7 +16,7 @@
 
   async function signOut() {
     await userStore.signOut();
-    console.log('sign out successful');
+    console.info('sign out successful');
     router.push('/');
   }
 
