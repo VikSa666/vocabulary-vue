@@ -20,14 +20,9 @@ export interface Word {
   langOutWord: string;
   category: LexicCategory;
   tags: Tag[];
-  metadata?: WordData;
-}
-
-// TODO: This could be better
-export interface WordData {
-  category: LexicCategory;
-  // TODO: Users will be able to add their own!
-  tags: string[];
+  additionalInfo: string;
+  appearedTimes: number;
+  failedTimes: number;
 }
 
 // TODO: others??

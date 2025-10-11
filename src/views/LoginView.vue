@@ -24,43 +24,45 @@
 </script>
 
 <template>
-  <p-card>
-    <template #title>Login</template>
-    <template #content>
-      <div class="flex flex-col flex-center gap-2 p-2 items-center">
-        <p-input-group>
-          <p-input-group-addon>
-            <i class="pi pi-at" />
-          </p-input-group-addon>
-          <p-input-text
-            type="text"
-            size="small"
-            v-model="email"
-            placeholder="example@example.com"
-          />
-        </p-input-group>
+  <div class="w-full flex flex-col items-center">
+    <p-card class="w-fit">
+      <template #title>Login</template>
+      <template #content>
+        <div class="flex flex-col flex-center gap-2 p-2 items-center">
+          <p-input-group>
+            <p-input-group-addon>
+              <i class="pi pi-at" />
+            </p-input-group-addon>
+            <p-input-text
+              type="text"
+              size="small"
+              v-model="email"
+              placeholder="example@example.com"
+            />
+          </p-input-group>
 
-        <p-input-group>
-          <p-input-group-addon>
-            <i class="pi pi-key" />
-          </p-input-group-addon>
-          <p-password
-            type="text"
-            size="small"
-            v-model="password"
-            placeholder="Password"
-            :feedback="false"
-          />
-        </p-input-group>
+          <p-input-group>
+            <p-input-group-addon>
+              <i class="pi pi-key" />
+            </p-input-group-addon>
+            <p-password
+              type="text"
+              size="small"
+              v-model="password"
+              placeholder="Password"
+              :feedback="false"
+            />
+          </p-input-group>
 
-        <p-button label="Login" @click="login" size="small" />
-        <div class="flex flex-row items-center">
-          <p class="text-sm">You don't have an account?</p>
-          <p-button variant="link" asChild v-slot="slotProps" size="small">
-            <router-link to="/register" :class="slotProps.class">Create account</router-link>
-          </p-button>
+          <p-button label="Login" @click="login" size="small" />
+          <div class="flex flex-row items-center">
+            <p class="text-sm">You don't have an account?</p>
+            <p-button variant="link" asChild v-slot="slotProps" size="small">
+              <router-link to="/register" :class="slotProps.class">Create account</router-link>
+            </p-button>
+          </div>
         </div>
-      </div>
-    </template>
-  </p-card>
+      </template>
+    </p-card>
+  </div>
 </template>

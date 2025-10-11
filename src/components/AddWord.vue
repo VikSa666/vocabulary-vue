@@ -4,6 +4,11 @@
   import PMessage from 'primevue/message';
   import PInputText from 'primevue/inputtext';
   import PMultiSelect from 'primevue/multiselect';
+  import PAccordion from 'primevue/accordion';
+  import PAccordionPanel from 'primevue/accordionpanel';
+  import PAccordionHeader from 'primevue/accordionheader';
+  import PAccordionContent from 'primevue/accordioncontent';
+  import PTextarea from 'primevue/textarea';
   import PillTag from './PillTag.vue';
   import AddTag from './AddTag.vue';
   import CategorySelector from './CategorySelector.vue';
@@ -16,12 +21,14 @@
   const langInWord = ref('');
   const category: Ref<LexicCategory | undefined> = ref();
   const tags: Ref<Tag[]> = ref([]);
+  const additionalInfo = ref('');
 
   interface PartialWord {
     langOutWord: string;
     langInWord: string;
     category?: LexicCategory;
     tags: Tag[];
+    additionalInfo?: string;
   }
 
   const userStore = useUserStore();
@@ -49,6 +56,7 @@
       langInWord: langInWord.value,
       category: category.value,
       tags: tags.value,
+      additionalInfo: additionalInfo.value,
     });
   }
 
@@ -76,7 +84,7 @@
 
 <template>
   <p-panel header="Add a new word">
-    <div class="flex flex-col gap-2 items-start">
+    <div class="flex flex-col gap-2 items-stretch">
       <div class="flex flex-row gap-2 flex-wrap">
         <div class="flex flex-col gap-2 w-[20%] min-w-40">
           <p-input-text v-model="langOutWord" placeholder="Word" />
@@ -99,7 +107,7 @@
           >
         </div>
 
-        <div class="flex flex-col gap-2 w-[20%] min-w-40">
+        <div class="flex flex-col gap-2 min-w-40">
           <p-multi-select
             v-model="tags"
             :options="availableTags"
@@ -146,7 +154,17 @@
           >
         </div>
       </div>
-      <p-button size="small" @click="addWord" label="Add" />
+      <p-accordion value="0">
+        <p-accordion-panel value="0">
+          <p-accordion-header>Additional description</p-accordion-header>
+          <p-accordion-content>
+            <p-textarea v-model="additionalInfo" fluid />
+          </p-accordion-content>
+        </p-accordion-panel>
+      </p-accordion>
+      <div class="flex flex-row">
+        <p-button size="small" icon="pi pi-check" @click="addWord" label="Add word" />
+      </div>
     </div>
   </p-panel>
 </template>

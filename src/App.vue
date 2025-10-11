@@ -102,10 +102,3 @@
     </div>
   </main>
 </template>
-<style scoped>
-  .main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-</style>

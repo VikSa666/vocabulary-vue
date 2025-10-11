@@ -24,8 +24,9 @@
 </script>
 
 <template>
-  <!-- TODO: Redirect and not use as component!!! -->
+  <!-- TODO!: Redirect and not use as component!!! -->
   <dashboard-view></dashboard-view>
+  <!-- TODO: Remove this-->
   <p-card>
     <template #title><h1>This is protected content</h1></template>
     <template #content>

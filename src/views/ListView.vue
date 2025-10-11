@@ -51,6 +51,7 @@
     langInWord: string;
     category?: LexicCategory;
     tags: Tag[];
+    additionalInfo?: string;
   }) {
     // TODO: Handle this better
     if (!partialWord.langInWord || !partialWord.langOutWord) return;
@@ -61,6 +62,7 @@
       langOutWord: partialWord.langOutWord,
       category: partialWord.category,
       tags: partialWord.tags,
+      additionalInfo: partialWord.additionalInfo,
     };
     const { data: _, error } = await supabase.from('words').insert([newWord]).select();
 
@@ -180,19 +182,14 @@
 
 <template>
   <div class="overflow-auto">
-    <p-button size="small" label="Back" @click="router.push('/secret')" icon="pi pi-arrow-left" />
-
     <p-toolbar>
       <template #start>
         <div class="flex flex-row gap-2">
           <p-button
             size="small"
-            icon="pi pi-filter"
-            rounded
-            class="mr-2"
-            :severity="filteredCategory || filteredTags ? 'primary' : 'secondary'"
-            :text="!showFilterBy && !filteredCategory && !filteredTags"
-            @click="toggleFilterBy"
+            label="Back"
+            @click="router.push('/secret')"
+            icon="pi pi-arrow-left"
           />
           <p-message
             v-if="filteredCategory || filteredTags"
@@ -205,24 +202,44 @@
         </div>
       </template>
       <template #center>
-        <p-icon-field>
-          <p-input-icon>
-            <i class="pi pi-search" />
-          </p-input-icon>
-          <p-input-text size="small" placeholder="Search" v-model="searchText" />
-        </p-icon-field>
+        <div class="flex flex-row gap-2">
+          <p-icon-field>
+            <p-input-icon>
+              <i class="pi pi-search" />
+            </p-input-icon>
+            <p-input-text size="small" placeholder="Search" v-model="searchText" />
+          </p-icon-field>
+          <p-button
+            size="small"
+            icon="pi pi-filter"
+            rounded
+            class="mr-2"
+            :severity="filteredCategory || filteredTags ? 'primary' : 'secondary'"
+            :text="!showFilterBy && !filteredCategory && !filteredTags"
+            @click="toggleFilterBy"
+          />
+        </div>
       </template>
       <template #end>
-        <p-button
-          size="small"
-          :icon="showAddWord ? 'pi pi-minus' : 'pi pi-plus'"
-          label="Create word"
-          rounded
-          class="mr-2"
-          severity="secondary"
-          :text="!showAddWord"
-          @click="toggleAddWord"
-        />
+        <div class="flex flex-row gap-2">
+          <p-button
+            size="small"
+            :icon="showAddWord ? 'pi pi-minus' : 'pi pi-plus'"
+            label="Create word"
+            rounded
+            class="mr-2"
+            severity="secondary"
+            :text="!showAddWord"
+            @click="toggleAddWord"
+          />
+          <p-button
+            size="small"
+            label="Start exam"
+            @click="router.push('/exam')"
+            icon="pi pi-arrow-right"
+            icon-pos="right"
+          />
+        </div>
       </template>
     </p-toolbar>
 
